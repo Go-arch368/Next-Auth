@@ -4,8 +4,8 @@ import { db } from "./lib/db";
 import authConfig from "./auth.config";
 import { getUserById } from "./data/user";
 import {UserRole} from "@prisma/client"
-import { turborepoTraceAccess } from "next/dist/build/turborepo-access-trace";
-console.log(UserRole);
+
+console.log(UserRole); 
 
 
 
@@ -17,21 +17,21 @@ export const {
     signOut,
 } = NextAuth({
     callbacks:{
-      async signIn({ user }) {
-        console.log(user); 
-        if (!user.id) {
-          console.error("User ID is missing!");
-          return false;
-        }
+      // async signIn({ user }) {
+      //   console.log(user); 
+      //   if (!user.id) {
+      //     console.error("User ID is missing!");
+      //     return false;
+      //   }
       
-        const existingUser = await getUserById(user.id);
-        if (!existingUser || !existingUser.emailVerified) {
-          console.error("User not found or email not verified!");
-          return false;
-        }
+      //   const existingUser = await getUserById(user.id);
+      //   if (!existingUser || !existingUser.emailVerified) {
+      //     console.error("User not found or email not verified!");
+      //     return false;
+      //   }
       
-        return true;
-      },      
+      //   return true;
+      // },      
       async session({token,session}){ 
        if(token.sub&&session.user){
         session.user.id=token.sub

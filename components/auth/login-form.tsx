@@ -25,19 +25,34 @@ export const LoginForm = ()=>{
          },
     });
 
-    const onSubmit = (values:z.infer<typeof LoginSchema>) =>{
-        setError("")
-        setSuccess("")
-        startTransition(()=>{
-            login(values)
-            .then((data)=>{
-                setError(data.error)
-                setSuccess(data.success)
+    const onSubmit = (values: z.infer<typeof LoginSchema>) => {
+      setError("");
+      setSuccess("");
+      startTransition(() => {
+        login(values)
+            .then((data) => {
+                console.log("Login response:", data); // Debugging
+                if (!data) {
+                    setError("No response from server.");
+                    return;
+                }
+                if (data.error) {
+                    setError(data.error);
+                    setSuccess("");
+                } else if (data.success) {
+                    setSuccess(data.success);
+                    setError("");
+                }
             })
-        })
+            .catch((error) => {
+                console.error("Login failed:", error);
+                setError("An unexpected error occurred.");
+                setSuccess("");
+            });
+    });
     
-    }
-    
+  };
+      
     return(
         <CardWrapper 
          headerLabel="Welocome back"
