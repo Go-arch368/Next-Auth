@@ -5,6 +5,7 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { useTransition,useState } from "react"
 import {useForm} from "react-hook-form"
 import {Form,FormControl,FormField,FormItem,FormLabel,FormMessage} from "../ui/form"
+import { useSearchParams } from "next/navigation"
 import { Input } from "../ui/input"
 import { LoginSchema } from "@/schemas"
 import { Button } from "../ui/button"
@@ -14,6 +15,8 @@ import { login } from "@/actions/login"
 
 
 export const LoginForm = ()=>{
+    const searchParams = useSearchParams()
+    const urlError = searchParams.get("error")==="OAuthAccountNotLinked"?"Email already in use with differnent provider":""
     const [isPending,startTransition] = useTransition()
     const [error,setError] = useState<string|undefined>("")
     const [success,setSuccess] = useState<string|undefined>("")
@@ -31,24 +34,9 @@ export const LoginForm = ()=>{
       startTransition(() => {
         login(values)
             .then((data) => {
-                console.log("Login response:", data); // Debugging
-                if (!data) {
-                    setError("No response from server.");
-                    return;
-                }
-                if (data.error) {
-                    setError(data.error);
-                    setSuccess("");
-                } else if (data.success) {
-                    setSuccess(data.success);
-                    setError("");
-                }
+              setError(data?.error);
+              setSuccess(data?.success)
             })
-            .catch((error) => {
-                console.error("Login failed:", error);
-                setError("An unexpected error occurred.");
-                setSuccess("");
-            });
     });
     
   };
